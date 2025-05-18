@@ -2,8 +2,6 @@ import typer
 import json
 from typing import List
 from sqlalchemy import Engine
-from rich.table import Table
-from rich.console import Console
 from uuid import uuid4
 
 from agents.agent import get_sql_agent
@@ -18,6 +16,7 @@ from agno.document.base import Document
 from agno.models.openai import OpenAIChat
 from agno.team.team import Team
 from constants import USER_ID
+from rich.progress import Progress, SpinnerColumn, TextColumn
 
 def load_db_knowledge(engine: Engine) -> Database:
     if engine.driver == "psycopg2":
@@ -33,22 +32,28 @@ def load_databases() -> List[Agent]:
             engine = create_engine(url=el.uri)
             db = load_db_knowledge(engine=engine)
 
-            document = Document(
-                name=el.name,
-                id=str(uuid4()),
-                meta_data={"page": 0},
-                content=json.dumps(db.to_json()),
-            )
-            
             collection = f"agent-{el.name}"
-            logger.info(f"Loading {collection} knowledge.")
 
-            vector = StoreDb().knowleged_base_db(collection=collection)
-            knowledge_base = JSONKnowledgeBase(
-                vector_db=vector)
-            knowledge_base.load_documents(documents=[document], upsert=True)
-            
-            logger.info(f"{collection} knowledge loaded.")
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[progress.description]{task.description}"),
+                transient=True,
+            ) as progress:
+                task = progress.add_task(f"Loading knowledge for {collection}...", total=None)
+
+                document = Document(
+                    name=el.name,
+                    id=str(uuid4()),
+                    meta_data={"page": 0},
+                    content=json.dumps(db.to_json()),
+                )
+
+                vector = StoreDb().knowleged_base_db(collection=collection)
+                knowledge_base = JSONKnowledgeBase(
+                    vector_db=vector)
+                knowledge_base.load_documents(documents=[document], upsert=True)
+
+                progress.remove_task(task)
 
             agent = get_sql_agent(db_engine=engine, knowledge_base=knowledge_base)
             list_agents.append(agent)
@@ -87,6 +92,7 @@ data_team = Team(
     members=agents,
     show_tool_calls=True,
     markdown=True,
+    description="A collaborative team that extracts, analyzes, and explains structured data.",
     instructions = [
         "Your goal is to collaboratively analyze a user's data-related question and produce a detailed, accurate, and well-structured response.",
         "First, the SQL Agent will interpret the question, translate it into SQL queries, and execute them to retrieve the relevant data.",
@@ -97,4 +103,5 @@ data_team = Team(
         "If any step fails due to missing data or unsupported queries, provide a polite and helpful fallback message.",
     ],
     show_members_responses=True,
+    user_id=USER_ID
 )
