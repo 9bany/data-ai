@@ -8,7 +8,7 @@
 - Automatically loads schema and metadata
 - Generates vectorized knowledge from database structure
 - Each database becomes an AI agent with memory
-- Supports collaborative team chat between agents
+- Supports collaborative/Coordinative team chat between agents
 - Easy CLI commands: `add`, `list`, `chat`
 
 ---
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 ### 2. Set up your `.env`
 ```env
-OPENAI_API_KEY=your-openai-api-key
+export OPENAI_API_KEY=your-openai-api-key
 ```
 
 
@@ -77,7 +77,6 @@ Each connected database becomes an agent that understands the schema and can par
 |--------------|--------------------------|------------|
 | PostgreSQL   | `psycopg2`               | ✅ Stable  |
 | MySQL        | `mysql+pymysql`          | ✅ Stable  |
-| Redis        | `redis-py`               | ✅ Basic   |
 | MongoDB      | `pymongo`                | ✅ Stable  |
 | ClickHouse   | `clickhouse-connect`     | ✅ Stable  |
 | BigQuery     | `google-cloud-bigquery`  | ✅ Stable  |

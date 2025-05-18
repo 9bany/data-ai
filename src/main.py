@@ -16,7 +16,6 @@ from rich.table import Table
 from rich.console import Console
 from uuid import uuid4
 
-from store import DatabaseStore
 from agents.agent import get_sql_agent
 from db.pg import PostgreSQLDatabase
 from db import Database
@@ -127,8 +126,8 @@ def chat():
 
     
     agent_team = Team(
-        name="Discussion Team",
-        mode="collaborate",
+        name="Data Team",
+        mode="coordinate",
         model=OpenAIChat("gpt-4o"),
         memory=StoreDb().memory_db,
         enable_user_memories=True,
