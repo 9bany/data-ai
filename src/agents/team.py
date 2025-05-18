@@ -58,6 +58,27 @@ def load_databases() -> List[Agent]:
     return list_agents
 
 agents = load_databases()
+analyst_agent = Agent(
+    name="Analyst Agent",
+    role="Analyzes SQL result data",
+    instructions=[
+        "Interpret the SQL output and summarize insights, trends, anomalies, and comparisons.",
+        "Provide clear, concise analysis with bullet points if needed.",
+        "Do not include raw SQL or database code."
+    ]
+)
+agents.append(analyst_agent)
+
+explainer_agent = Agent(
+    name="Explanation Agent",
+    role="Turns technical output into natural language summary",
+    instructions=[
+        "Rephrase the analysis into user-friendly language.",
+        "Add helpful context if needed, and make the explanation accessible to non-technical users.",
+        "Avoid using database jargon—focus on clarity."
+    ]
+)
+agents.append(explainer_agent)
 
 data_team = Team(
     name="Data Team",
