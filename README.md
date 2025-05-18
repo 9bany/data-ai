@@ -1,4 +1,4 @@
-# Data-AI — Multi-Database Chat Agent Interface
+# Data-AI
 
 **Data-AI** is a terminal-based intelligent agent platform that connects to multiple databases (PostgreSQL, MySQL, Redis, MongoDB, ClickHouse, BigQuery...) and transforms them into AI-powered agents capable of understanding, storing, and reasoning over your data.
 
