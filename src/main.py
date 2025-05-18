@@ -66,8 +66,8 @@ def list():
 
 @app.command()
 def chat():
-    from agents.team import team_leader
-    team_leader.cli_app()
+    from agents.team import data_team
+    data_team.cli_app()
 
 def main():
     app()

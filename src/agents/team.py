@@ -12,8 +12,6 @@ from db import Database
 from store import StoreDb
 from agno.utils.log import logger
 
-databases = StoreDb().app_store.read_all()
-
 from agno.agent import Agent
 from agno.knowledge.json import JSONKnowledgeBase
 from agno.document.base import Document
@@ -26,9 +24,9 @@ def load_db_knowledge(engine: Engine) -> Database:
         return PostgreSQLDatabase(engine=engine)
     raise ValueError(f"Unsupported database driver: {engine.driver}")
 
-list_agents: List[Agent] = []
-
-def init_team():
+def load_databases() -> List[Agent]:
+    list_agents: List[Agent] = []
+    databases = StoreDb().app_store.read_all()
     for el in databases:
         from sqlalchemy import create_engine
         try:
@@ -57,37 +55,25 @@ def init_team():
         except Exception as e:
             typer.echo(f"Failed to load agent for {el.name}: {e}")
             exit(0)
+    return list_agents
 
-    if not list_agents:
-        typer.echo("No valid agents found. Exiting.")
-        return
+agents = load_databases()
 
-    agent_team = Team(
-        name="Data Team",
-        mode="coordinate",
-        model=OpenAIChat("gpt-4o"),
-        memory=StoreDb().memory_db,
-        enable_user_memories=True,
-        enable_agentic_memory=True,
-        markdown=True,
-        num_history_runs=50,
-        members=list_agents,
-        instructions=[
-            "You are the team leader responsible for managing a group of database agents.",
-            "Each agent represents knowledge extracted from a different data source (PostgreSQL, MySQL, MongoDB, etc.).",
-            "Your role is to coordinate the discussion, ask clarifying questions, and summarize responses from agents.",
-            "You must detect when the team has reached consensus, or when conflicting opinions exist.",
-            "Encourage collaboration, but ensure the team stays on topic and works toward the success criteria.",
-            "Use markdown formatting when giving final outputs or summaries.",
-            "You can delegate sub-tasks to specific agents, but always guide the conversation back to the main goal.",
-            "If the discussion stalls or diverges, bring it back to the key objective using your knowledge of the task.",
-        ],
-        success_criteria="The team has reached a consensus.",
-        enable_agentic_context=True,
-        show_members_responses=True,
-        show_tool_calls=False,
-        user_id=USER_ID,
-    )
-    return agent_team
-
-team_leader = init_team()
+data_team = Team(
+    name="Data Team",
+    mode="route",
+    model=OpenAIChat("gpt-4.5-preview"),
+    members=agents,
+    show_tool_calls=True,
+    markdown=True,
+    instructions = [
+        "Your goal is to collaboratively analyze a user's data-related question and produce a detailed, accurate, and well-structured response.",
+        "First, the SQL Agent will interpret the question, translate it into SQL queries, and execute them to retrieve the relevant data.",
+        "Then, the Analyst Agent will analyze the data output, extract insights, and generate summaries with trends, comparisons, or explanations.",
+        "Next, the Explanation Agent will rewrite the analysis in natural language for end-user readability, adding context if needed.",
+        "Finally, review the full response for clarity, correctness, and completeness before replying to the user.",
+        "Ensure that the final response is informative, easy to understand, and backed by accurate data.",
+        "If any step fails due to missing data or unsupported queries, provide a polite and helpful fallback message.",
+    ],
+    show_members_responses=True,
+)
