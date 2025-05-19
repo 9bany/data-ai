@@ -28,6 +28,13 @@ class DatabaseStore:
         self.conn.commit()
 
     def create(self, db_entry: Dict):
+        cursor = self.conn.execute(
+            "SELECT COUNT(*) FROM databases WHERE uri = ?",
+            (db_entry["uri"],)
+        )
+        if cursor.fetchone()[0] > 0:
+            return
+
         self.conn.execute(
             "INSERT INTO databases (name, driver, uri, meta_data) VALUES (?, ?, ?, ?)",
             (db_entry["name"], db_entry["driver"], db_entry["uri"], db_entry["meta_data"])

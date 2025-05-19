@@ -85,25 +85,10 @@ def list():
     console.print(table)
 
 @app.command()
-def test():
-    from agents.semantic_agent import (
-        get_structure_usage_explainer,
-        get_structure_explainer_with_example,
-        get_table_use_case_extractor,
-    )
-    from sqlalchemy import create_engine
-    from agents.knowledge import db_knowledge
-    import json
-    engine = create_engine(url="mysql+pymysql://root:root@localhost/mysql-data-ai-test")
-    db = db_knowledge(engine=engine)
-    response = get_table_use_case_extractor().run(json.dumps(db.to_json()))
-    print(response.content)
-
-@app.command()
 def chat():
-    from agents.team import data_team
+    from agents.team import get_data_team
     try:
-        data_team.cli_app()
+        get_data_team(work_style="collaborate").cli_app()
     except Exception as e:
         typer.echo(f"ERROR: {e}")
 

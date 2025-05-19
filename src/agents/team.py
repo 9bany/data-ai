@@ -61,27 +61,32 @@ explainer_agent = Agent(
 )
 agents.append(explainer_agent)
 
-data_team = Team(
-    name="Data Team",
-    mode="route",
-    model=get_model("openai:gpt-4.5-preview"),
-    members=agents,
-    show_tool_calls=True,
-    markdown=True,
-    description="A collaborative team that extracts, analyzes, and explains structured data.",
-    instructions = [
-        "Your goal is to collaboratively analyze a user's data-related question and produce a detailed, accurate, and well-structured response.",
-        "First, the SQL Agent will interpret the question, translate it into SQL queries, and execute them to retrieve the relevant data.",
-        "Then, the Analyst Agent will analyze the data output, extract insights, and generate summaries with trends, comparisons, or explanations.",
-        "Next, the Explanation Agent will rewrite the analysis in natural language for end-user readability, adding context if needed.",
-        "Finally, review the full response for clarity, correctness, and completeness before replying to the user.",
-        "Ensure that the final response is informative, easy to understand, and backed by accurate data.",
-        "If any step fails due to missing data or unsupported queries, provide a polite and helpful fallback message.",
-    ],
-    knowledge=StoreDb().data_team_knowledge,
-    search_knowledge=True,
-    show_members_responses=True,
-    num_history_runs=50,
-    enable_team_history=True,
-    user_id=USER_ID
-)
+debug_mode = Config().app_config.is_debug()
+
+def get_data_team(work_style: str = "route"):
+    data_team = Team(
+        name="Data Team",
+        mode=work_style,
+        model=get_model("openai:gpt-4.5-preview"),
+        members=agents,
+        markdown=True,
+        description="A collaborative team that extracts, analyzes, and explains structured data.",
+        instructions = [
+            "Your goal is to collaboratively analyze a user's data-related question and produce a detailed, accurate, and well-structured response.",
+            "First, the SQL Agent will interpret the question, translate it into SQL queries, and execute them to retrieve the relevant data.",
+            "Then, the Analyst Agent will analyze the data output, extract insights, and generate summaries with trends, comparisons, or explanations.",
+            "Next, the Explanation Agent will rewrite the analysis in natural language for end-user readability, adding context if needed.",
+            "Finally, review the full response for clarity, correctness, and completeness before replying to the user.",
+            "Ensure that the final response is informative, easy to understand, and backed by accurate data.",
+            "If any step fails due to missing data or unsupported queries, provide a polite and helpful fallback message.",
+        ],
+        knowledge=StoreDb().data_team_knowledge,
+        search_knowledge=True,
+        show_members_responses=True,
+        num_history_runs=50,
+        enable_team_history=True,
+        user_id=USER_ID,
+        tool_call_limit=5,
+        show_tool_calls=debug_mode,
+    )
+    return data_team

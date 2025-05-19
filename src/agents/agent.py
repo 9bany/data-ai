@@ -47,4 +47,5 @@ def get_sql_agent(
         debug_mode=debug_mode,
         add_history_to_messages=True,
         add_datetime_to_instructions=True,
+        show_tool_calls=debug_mode,
     )
