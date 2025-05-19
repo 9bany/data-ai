@@ -10,10 +10,11 @@ from agno.tools.file import FileTools
 from .promt import (
     additional_context,
     description, 
-    instructions
+    get_sql_instruction
 )
 from constants import IMAGES_PATH
 from sqlalchemy import Engine
+from helper import db_name
 
 def get_sql_agent(
     name: str = "SQL Agent",
@@ -49,7 +50,7 @@ def get_sql_agent(
         knowledge=knowledge_base,
         tools=tools,
         description=description,
-        instructions=instructions,
+        instructions=get_sql_instruction(datadabse_model=db_name(engine=db_engine)),
         additional_context=additional_context,
         search_knowledge=True,
         read_chat_history=True,

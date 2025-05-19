@@ -8,6 +8,7 @@ from constants import (
 )
 from agno.vectordb.chroma import ChromaDb
 from agno.agent import AgentKnowledge
+from agno.knowledge.text import TextKnowledgeBase
 from .app import DatabaseStore
 
 class SingletonMem(type):
@@ -29,5 +30,13 @@ class StoreDb(metaclass=SingletonMem):
         )
         self.memory_db = memory
         self.app_store = DatabaseStore(db_path=DB_STORE_FILE)
+        
+        vector = ChromaDb(path=DB_VECTOR_FILE, collection="data-team-knowledge_base")
+        self.data_team_knowledge = TextKnowledgeBase(vector_db=vector)
+
     def knowleged_base_db(self, collection: str)-> AgentKnowledge:
-        return ChromaDb(path=DB_VECTOR_FILE, collection=collection)
+        return ChromaDb(
+            path=DB_VECTOR_FILE, 
+            collection=collection,
+            persistent_client=True,
+        )
