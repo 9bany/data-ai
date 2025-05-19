@@ -18,7 +18,11 @@ from helper import (
     supported_driver,
 )
 from agno.utils.log import logger
-from agents.knowledge import process_database, drop_member_knowledge
+from agents.knowledge import (
+    process_database, 
+    drop_member_knowledge,
+    get_table_semantic,
+)
 
 logger.setLevel(Config().app_config.log_level)
 
@@ -39,12 +43,17 @@ def add(uri: str, name: str = typer.Option(None)):
         engine = create_engine(url=uri)
         if supported_driver(driver=engine.driver) == True:
             name = name or gen_hash_name()
-            load_database = lambda: process_database(name=name, uri=uri)
-            with_spinner("Analyze & load database knowledge", load_database)
+            meta_data = None
+            def analyze_db():
+                nonlocal meta_data
+                process_database(name=name, uri=uri)
+                meta_data = get_table_semantic(uri=uri)
+            with_spinner("Analyze & load database knowledge", analyze_db)
             StoreDb().app_store.create({
                 "name": name,
                 "uri": uri,
-                "driver": engine.driver
+                "driver": engine.driver,
+                "meta_data": meta_data,
             })
             console = Console()
             table = Table(show_lines=True)
@@ -74,6 +83,21 @@ def list():
             db.uri
         )
     console.print(table)
+
+@app.command()
+def test():
+    from agents.semantic_agent import (
+        get_structure_usage_explainer,
+        get_structure_explainer_with_example,
+        get_table_use_case_extractor,
+    )
+    from sqlalchemy import create_engine
+    from agents.knowledge import db_knowledge
+    import json
+    engine = create_engine(url="mysql+pymysql://root:root@localhost/mysql-data-ai-test")
+    db = db_knowledge(engine=engine)
+    response = get_table_use_case_extractor().run(json.dumps(db.to_json()))
+    print(response.content)
 
 @app.command()
 def chat():

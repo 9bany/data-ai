@@ -8,7 +8,12 @@ from db import Database
 from store import StoreDb
 from agno.knowledge.json import JSONKnowledgeBase
 from agno.document.base import Document
-from agents.semantic_agent import get_db_explainer
+from agents.semantic_agent import (
+    get_structure_usage_explainer,
+    get_structure_explainer_with_example,
+    get_table_use_case_extractor,
+)
+from textwrap import dedent
 from helper import agent_name as map_agent_name
 from sqlalchemy import create_engine
 
@@ -26,12 +31,23 @@ def drop_member_knowledge(agent_name: str):
     knowledge_base = JSONKnowledgeBase(vector_db=vector)
     knowledge_base.delete()
 
+def get_table_semantic(uri: str):
+    try:
+        engine = create_engine(url=uri)
+        db = db_knowledge(engine=engine)
+        response = get_table_use_case_extractor().run(json.dumps(db.to_json()))
+        return response.content
+    except Exception as e:
+        raise ValueError(f"Failed to process database: {uri}: {e}")
+
 def process_member_knowledge(agent_name: str, knowledge: str):
+    explainer = get_structure_explainer_with_example()
+    response = explainer.run(message=knowledge)
     document = Document(
         name=agent_name,
         id=str(uuid4()),
         meta_data={"page": 0},
-        content=knowledge,
+        content=response.content,
     )
     
     vector = StoreDb().knowleged_base_db(collection=agent_name)
@@ -39,7 +55,7 @@ def process_member_knowledge(agent_name: str, knowledge: str):
     knowledge_base.load_documents(documents=[document], upsert=True)
 
 def process_team_knowledge(agent_name: str, knowledge: str) -> Document: 
-    explainer = get_db_explainer()
+    explainer = get_structure_usage_explainer()
     response = explainer.run(message=knowledge)
 
     document = Document(

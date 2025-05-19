@@ -10,3 +10,4 @@ chromadb==1.0.9
 anthropic==0.51.0
 google-genai==1.15.0
 groq==0.25.0
+cryptography==45.0.2

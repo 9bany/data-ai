@@ -1,9 +1,6 @@
 import json
 from textwrap import dedent
 
-# TODO: add semantic modle
-_semantic_model_str = json.dumps("", indent=2)
-
 description = dedent("""\
     You are SQrL, an elite Text2SQL Agent with access to a database.
 """)
@@ -59,14 +56,15 @@ def get_sql_instruction(datadabse_model: str):
     """)
     return instructions
 
-additional_context = (
-    dedent("""\n
-    The `semantic_model` contains information about tables and the relationships between them.
-    If the users asks about the tables you have access to, simply share the table names from the `semantic_model`.
-    <semantic_model>
+def additional_context(semantic_model: str) -> str:
+    additional_context = (
+        dedent("""\n
+        The `semantic_model` contains information about tables and the relationships between them.
+        If the users asks about the tables you have access to, simply share the table names from the `semantic_model`.
+        <semantic_model>
+        """)
+        + semantic_model
+        + dedent("""
+        </semantic_model>\
     """)
-    + _semantic_model_str
-    + dedent("""
-    </semantic_model>\
-""")
-)
+    )
