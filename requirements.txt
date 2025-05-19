@@ -5,3 +5,8 @@ sqlalchemy==2.0.41
 pymysql==1.1.1
 prompt_toolkit==3.0.51
 clickhouse-sqlalchemy==0.3.2
+openai==1.79.0
+chromadb==1.0.9
+anthropic==0.51.0
+google-genai==1.15.0
+groq==0.25.0

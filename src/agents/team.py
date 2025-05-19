@@ -17,7 +17,10 @@ from agno.document.base import Document
 from agno.models.openai import OpenAIChat
 from agno.team.team import Team
 from constants import USER_ID
-from helper import agent_name as map_agent_name
+from helper import (
+    agent_name as map_agent_name,
+    get_model
+)
 
 from config import Config
 
@@ -70,7 +73,7 @@ agents.append(explainer_agent)
 data_team = Team(
     name="Data Team",
     mode="collaborate",
-    model=OpenAIChat("gpt-4.5-preview"),
+    model=get_model("openai:gpt-4.5-preview"),
     members=agents,
     show_tool_calls=True,
     markdown=True,

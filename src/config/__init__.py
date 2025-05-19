@@ -28,3 +28,7 @@ class Config(metaclass=Singleton):
             data_config.update(data_injection)
             init_message += ", data injection length: {}".format(len(data_injection))
         self.app_config = AppConfig(data_config)
+        self.open_ai_key = data_config.get('OPENAI_API_KEY', None)
+        self.google_api_key = data_config.get('GOOGLE_API_KEY', None)
+        self.anthropic_api_key = data_config.get('ANTHROPIC_API_KEY', None)
+        self.groq_api_key = data_config.get('GROQ_API_KEY', None)
