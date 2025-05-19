@@ -16,7 +16,7 @@ from agno.document.base import Document
 from agno.models.openai import OpenAIChat
 from agno.team.team import Team
 from constants import USER_ID
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from helper import with_spinner
 
 def load_db_knowledge(engine: Engine) -> Database:
     if engine.driver == "psycopg2":
@@ -34,13 +34,7 @@ def load_databases() -> List[Agent]:
 
             collection = f"agent-{el.name}"
 
-            with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                transient=True,
-            ) as progress:
-                task = progress.add_task(f"Loading knowledge for {collection}...", total=None)
-
+            def load_knowledge():
                 document = Document(
                     name=el.name,
                     id=str(uuid4()),
@@ -52,9 +46,9 @@ def load_databases() -> List[Agent]:
                 knowledge_base = JSONKnowledgeBase(
                     vector_db=vector)
                 knowledge_base.load_documents(documents=[document], upsert=True)
-
-                progress.remove_task(task)
-
+                return knowledge_base
+            
+            knowledge_base = with_spinner(f"Loading knowledge for {collection}...", load_knowledge)
             agent = get_sql_agent(db_engine=engine, knowledge_base=knowledge_base)
             list_agents.append(agent)
         except Exception as e:
