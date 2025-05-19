@@ -23,15 +23,16 @@ user_id = "root"
 def supported_driver(driver: str) -> bool:
     if driver == "psycopg2":
         return True
+    if driver =="pymysql":
+        return True
     raise False
-
 
 @app.command()
 def add(uri: str, name: str = typer.Option(None)):
     from sqlalchemy import create_engine
     try:
         engine = create_engine(url=uri)
-        if supported_driver(driver=engine.driver):
+        if supported_driver(driver=engine.driver) == True:
             name = name or gen_hash_name()
             StoreDb().app_store.create({
                 "name": name,

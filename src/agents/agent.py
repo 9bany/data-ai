@@ -10,7 +10,7 @@ from agno.tools.file import FileTools
 from .promt import (
     additional_context,
     description, 
-    instructions
+    get_sql_instruction
 )
 from constants import IMAGES_PATH
 from sqlalchemy import Engine
@@ -22,6 +22,7 @@ def get_sql_agent(
     debug_mode: bool = True,
     db_engine: Optional[Engine] = None,
     knowledge_base: Optional[AgentKnowledge] = None,
+    datadabse_model: str = "MySQL",
 ) -> Agent:
     provider, model_name = model_id.split(":")
     if provider == "openai":
@@ -49,7 +50,7 @@ def get_sql_agent(
         knowledge=knowledge_base,
         tools=tools,
         description=description,
-        instructions=instructions,
+        instructions=get_sql_instruction(datadabse_model=datadabse_model),
         additional_context=additional_context,
         search_knowledge=True,
         read_chat_history=True,
