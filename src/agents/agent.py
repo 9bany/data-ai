@@ -22,6 +22,7 @@ def get_sql_agent(
     debug_mode: bool = True,
     db_engine: Optional[Engine] = None,
     knowledge_base: Optional[AgentKnowledge] = None,
+    semantic_model: str = "",
 ) -> Agent:
     model = get_model(model_id=model_id)
     tools = [
@@ -38,8 +39,8 @@ def get_sql_agent(
         knowledge=knowledge_base,
         tools=tools,
         description=description,
-        instructions=get_sql_instruction(datadabse_model=db_name(engine=db_engine.driver)),
-        additional_context=additional_context,
+        instructions=get_sql_instruction(datadabse_model=db_name(driver=db_engine.driver)),
+        additional_context=additional_context(semantic_model=semantic_model),
         search_knowledge=True,
         read_chat_history=True,
         read_tool_call_history=True,

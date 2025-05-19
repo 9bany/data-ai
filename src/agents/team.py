@@ -1,20 +1,10 @@
 import typer
-import json
 from typing import List
-from sqlalchemy import Engine
-from uuid import uuid4
-
 from agents.agent import get_sql_agent
-from agents.semantic_agent import get_db_explainer
-from db.pg import PostgreSQLDatabase
-from db.mysql import MySQLDatabase
-from db import Database
 from store import StoreDb
 
 from agno.agent import Agent
 from agno.knowledge.json import JSONKnowledgeBase
-from agno.document.base import Document
-from agno.models.openai import OpenAIChat
 from agno.team.team import Team
 from constants import USER_ID
 from helper import (
@@ -38,7 +28,8 @@ def get_agents() -> List[Agent]:
                 name=agent_name,
                 debug_mode=Config().app_config.is_debug(),
                 db_engine=engine, 
-                knowledge_base=knowledge_base
+                knowledge_base=knowledge_base,
+                semantic_model=el.meta_data,
             )
             list_agents.append(agent)
         except Exception as e:
