@@ -12,8 +12,9 @@ import typer
 from rich.table import Table
 from rich.console import Console
 from store import StoreDb
-from helper import gen_hash_name
+from helper import gen_hash_name, with_spinner
 from agno.utils.log import logger
+from agents.knowledge import process_database
 
 logger.setLevel(Config().app_config.log_level)
 
@@ -39,6 +40,8 @@ def add(uri: str, name: str = typer.Option(None)):
                 "uri": uri,
                 "driver": engine.driver
             })
+            load_database = lambda: process_database(name=name, uri=uri)
+            with_spinner("Analyze & load database knowledge", load_database)
             console = Console()
             table = Table(title="Database Added", show_lines=True)
             table.add_column("Name", style="cyan")
@@ -49,7 +52,7 @@ def add(uri: str, name: str = typer.Option(None)):
         else: 
             typer.echo(f"Unsupported driver: {engine.driver}")
     except Exception as e:
-        typer.echo(f"Failed {e}")
+        typer.echo(f"ERROR: {e}")
 
 @app.command()
 def list():

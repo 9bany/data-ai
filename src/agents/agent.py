@@ -14,6 +14,7 @@ from .promt import (
 )
 from constants import IMAGES_PATH
 from sqlalchemy import Engine
+from helper import db_name
 
 def get_sql_agent(
     name: str = "SQL Agent",
@@ -22,7 +23,6 @@ def get_sql_agent(
     debug_mode: bool = True,
     db_engine: Optional[Engine] = None,
     knowledge_base: Optional[AgentKnowledge] = None,
-    datadabse_model: str = "MySQL",
 ) -> Agent:
     provider, model_name = model_id.split(":")
     if provider == "openai":
@@ -50,7 +50,7 @@ def get_sql_agent(
         knowledge=knowledge_base,
         tools=tools,
         description=description,
-        instructions=get_sql_instruction(datadabse_model=datadabse_model),
+        instructions=get_sql_instruction(datadabse_model=db_name(engine=db_engine)),
         additional_context=additional_context,
         search_knowledge=True,
         read_chat_history=True,
