@@ -1,16 +1,18 @@
 from typing import List
 from db import Database, Table, Column
-
+from sqlalchemy import Engine, text
 class ClickHouseDatabase(Database):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, engine: Engine):
+        self.engine = engine
 
     def tables(self) -> List[Table]:
-        result = self.client.execute("SHOW TABLES")
+        with self.engine.connect() as conn:
+            result = conn.execute(text("SHOW TABLES")).fetchall()
         return [Table(name=row[0], description="ClickHouse table") for row in result]
 
     def table(self, table_name: str) -> Table:
-        result = self.client.execute(f"DESCRIBE TABLE {table_name}")
+        with self.engine.connect() as conn:
+            result = conn.execute(text(f"DESCRIBE TABLE {table_name}")).fetchall()
         columns = [Column(name=row[0], type=row[1], description="") for row in result]
         return Table(name=table_name, description="ClickHouse table", columns=columns)
 

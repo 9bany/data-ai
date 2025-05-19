@@ -12,9 +12,9 @@ import typer
 from rich.table import Table
 from rich.console import Console
 from store import StoreDb
-from helper import gen_hash_name, with_spinner
+from helper import gen_hash_name, with_spinner, agent_name
 from agno.utils.log import logger
-from agents.knowledge import process_database
+from agents.knowledge import process_database, drop_member_knowledge
 
 logger.setLevel(Config().app_config.log_level)
 
@@ -26,7 +26,15 @@ def supported_driver(driver: str) -> bool:
         return True
     if driver =="pymysql":
         return True
+    if driver == "native":
+        return True
     raise False
+@app.command()
+def delete(name: str):
+    def delete():
+        StoreDb().app_store.delete(name=name)
+        drop_member_knowledge(agent_name=agent_name(name))
+    with_spinner(f"Delete agent: {name}", delete)
 
 @app.command()
 def add(uri: str, name: str = typer.Option(None)):
@@ -62,7 +70,7 @@ def list():
     table.add_column("Name", style="magenta")
     table.add_column("Driver", style="green")
     table.add_column("URI", style="yellow")
-    for db in StoreDb().app_store.read_all():
+    for db in StoreDb().app_store.get_all():
         table.add_row(
             str(db.id),
             db.name,

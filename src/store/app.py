@@ -32,9 +32,12 @@ class DatabaseStore:
         )
         self.conn.commit()
 
-    def read_all(self) -> List[DatabaseObject]:
+    def get_all(self) -> List[DatabaseObject]:
         cursor = self.conn.execute("SELECT id, name, uri, driver FROM databases")
         return [
             DatabaseObject(id=row[0], name=row[1], uri=row[2], driver=row[3])
             for row in cursor.fetchall()
         ]
+    def delete(self, name: str) -> List[DatabaseObject]:
+        self.conn.execute("DELETE FROM databases WHERE name = ?", (name,))
+        self.conn.commit()

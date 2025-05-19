@@ -3,6 +3,7 @@ from sqlalchemy import Engine
 from uuid import uuid4
 from db.pg import PostgreSQLDatabase
 from db.mysql import MySQLDatabase
+from db.clickhouse import ClickHouseDatabase
 from db import Database
 from store import StoreDb
 from agno.knowledge.json import JSONKnowledgeBase
@@ -16,10 +17,16 @@ def db_knowledge(engine: Engine) -> Database:
         return PostgreSQLDatabase(engine=engine)
     if engine.driver == "pymysql":
         return MySQLDatabase(engine=engine)
+    if engine.driver == "native":
+        return ClickHouseDatabase(engine=engine)
     raise ValueError(f"Unsupported database driver: {engine.driver}")
 
+def drop_member_knowledge(agent_name: str):
+    vector = StoreDb().knowleged_base_db(collection=agent_name)
+    knowledge_base = JSONKnowledgeBase(vector_db=vector)
+    knowledge_base.delete()
+
 def process_member_knowledge(agent_name: str, knowledge: str):
-    print(agent_name)
     document = Document(
         name=agent_name,
         id=str(uuid4()),

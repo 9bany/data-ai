@@ -23,13 +23,12 @@ from config import Config
 
 def get_agents() -> List[Agent]:
     list_agents: List[Agent] = []
-    databases = StoreDb().app_store.read_all()
+    databases = StoreDb().app_store.get_all()
     for el in databases:
         from sqlalchemy import create_engine
         try:
             engine = create_engine(url=el.uri)
             agent_name = map_agent_name(el.name)
-            print(agent_name)
             vector = StoreDb().knowleged_base_db(collection=agent_name)
             knowledge_base = JSONKnowledgeBase(vector_db=vector)
             agent = get_sql_agent(

@@ -21,6 +21,8 @@ def db_name(engine: Engine) -> str:
         return "PostgreSQL Database"
     if engine.driver == "pymysql":
         return "MySQL Database"
+    if engine.driver == "native":
+        return "Clickhouse"
     raise ValueError(f"Unsupported database driver: {engine.driver}")
 
 def agent_name(db_name: str) -> str:
