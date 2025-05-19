@@ -7,13 +7,15 @@ dotenv_path = join(dirname(dirname(__file__)), ".env")
 os.environ["PROJECT_DIR"] = dirname(dirname(__file__))
 Config(env_file=dotenv_path, data_injection={"any": "yes"})
 
-import uuid
 import os
 import typer
 from rich.table import Table
 from rich.console import Console
 from store import StoreDb
 from helper import gen_hash_name
+from agno.utils.log import logger
+
+logger.setLevel(Config().app_config.log_level)
 
 app = typer.Typer()
 user_id = "root"

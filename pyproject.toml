@@ -1,0 +1,17 @@
+[project]
+name = "data-ai"
+version = "0.1.0"
+description = "A CLI tool for managing and chatting with databases using AI"
+authors = [{ name = "9bany", email = "bany.y0599@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "typer[all]",
+    "sqlalchemy",
+    "rich",
+    "python-dotenv"
+]
+
+[project.scripts]
+data-ai = "main:main"

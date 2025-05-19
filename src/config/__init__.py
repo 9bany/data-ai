@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from config.db import PostgresConfig
+from config.app_config import AppConfig
 
 class Singleton(type):
     _instances = {}
@@ -29,3 +30,4 @@ class Config(metaclass=Singleton):
             init_message += ", data injection length: {}".format(len(data_injection))
 
         self.pg_config = PostgresConfig(data_config)
+        self.app_config = AppConfig(data_config)

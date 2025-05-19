@@ -8,7 +8,6 @@ from agents.agent import get_sql_agent
 from db.pg import PostgreSQLDatabase
 from db import Database
 from store import StoreDb
-from agno.utils.log import logger
 
 from agno.agent import Agent
 from agno.knowledge.json import JSONKnowledgeBase
@@ -17,6 +16,7 @@ from agno.models.openai import OpenAIChat
 from agno.team.team import Team
 from constants import USER_ID
 from helper import with_spinner
+from config import Config
 
 def load_db_knowledge(engine: Engine) -> Database:
     if engine.driver == "psycopg2":
@@ -49,7 +49,11 @@ def load_databases() -> List[Agent]:
                 return knowledge_base
             
             knowledge_base = with_spinner(f"Loading knowledge for {collection}...", load_knowledge)
-            agent = get_sql_agent(db_engine=engine, knowledge_base=knowledge_base)
+            agent = get_sql_agent(
+                debug_mode=Config().app_config.is_debug(),
+                db_engine=engine, 
+                knowledge_base=knowledge_base
+            )
             list_agents.append(agent)
         except Exception as e:
             typer.echo(f"Failed to load agent for {el.name}: {e}")
