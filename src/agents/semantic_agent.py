@@ -1,12 +1,6 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
-from agno.models.google import Gemini
-from agno.models.groq import Groq
-from agno.models.openai import OpenAIChat
-import json
 from textwrap import dedent
-from constants import IMAGES_PATH
-from sqlalchemy import Engine
+from helper import get_model
 
 instructions = dedent(f"""\
     You are a Database Explainer.
@@ -32,18 +26,7 @@ def get_db_explainer(
     name: str = "Database explainer",
     model_id: str = "openai:gpt-4o"
 ) -> Agent:
-    provider, model_name = model_id.split(":")
-    if provider == "openai":
-        model = OpenAIChat(id=model_name)
-    elif provider == "google":
-        model = Gemini(id=model_name)
-    elif provider == "anthropic":
-        model = Claude(id=model_name)
-    elif provider == "groq":
-        model = Groq(id=model_name)
-    else:
-        raise ValueError(f"Unsupported model provider: {provider}")
-    
+    model = get_model(model_id=model_id)
     return Agent(
         name=name,
         model=model,
