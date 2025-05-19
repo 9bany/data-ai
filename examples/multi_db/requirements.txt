@@ -1,0 +1,6 @@
+faker=37.3.0
+sqlalchemy==2.0.41
+pymysql==1.1.1
+cryptography==45.0.2
+psycopg2-binary
+clickhouse-sqlalchemy==0.3.2
