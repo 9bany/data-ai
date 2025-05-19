@@ -13,6 +13,7 @@ import typer
 from rich.table import Table
 from rich.console import Console
 from store import StoreDb
+from helper import gen_hash_name
 
 app = typer.Typer()
 user_id = "root"
@@ -29,7 +30,7 @@ def add(uri: str, name: str = typer.Option(None)):
     try:
         engine = create_engine(url=uri)
         if supported_driver(driver=engine.driver):
-            name = name or f"db-{uuid.uuid4().hex[:6]}"
+            name = name or gen_hash_name()
             StoreDb().app_store.create({
                 "name": name,
                 "uri": uri,
