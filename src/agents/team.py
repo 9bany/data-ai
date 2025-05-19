@@ -69,7 +69,7 @@ agents.append(explainer_agent)
 
 data_team = Team(
     name="Data Team",
-    mode="route",
+    mode="collaborate",
     model=OpenAIChat("gpt-4.5-preview"),
     members=agents,
     show_tool_calls=True,

@@ -1,4 +1,5 @@
-# Data-AI
+# Data-AI — Your AI Agent for Databases
+> ⚠️ **Warning:** This project is under active development. Expect breaking changes, incomplete features, and evolving APIs.
 
 **Data-AI** is a terminal-based intelligent agent platform that connects to multiple databases (PostgreSQL, MySQL, ClickHouse, BigQuery...) and transforms them into AI-powered agents capable of understanding, storing, and reasoning over your data.
 
@@ -15,24 +16,7 @@
 
 ## System Overview
 
-```
-          ┌────────────┐
-          │  CLI (typer) ├────────┐
-          └────┬───────┘         │
-               │                 ▼
-         ┌─────▼─────┐      ┌─────────────┐
-         │ DB Engine │─────▶ Load Metadata│
-         └─────┬─────┘      └─────────────┘
-               │                 │
-               ▼                 ▼
-        VectorStore        KnowledgeBase (JSON)
-               │                 │
-               ▼                 ▼
-           Agent (SQLAgent)     ◀──────────┐
-               │                            │
-               ▼                            │
-         Team Discussion <───────── User CLI Interaction
-```
+![system overview](./docs/assets/1000000.png)
 
 ---
 
