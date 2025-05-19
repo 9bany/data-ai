@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-data-ai
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysql-data-ai-test
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-data-ai
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: pg-data-ai-test
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  clickhouse:
+    image: clickhouse
+    container_name: clickhouse-data-ai
+    environment:
+      - CLICKHOUSE_DB=ch-data-ai-test
+      - CLICKHOUSE_USER=root
+      - CLICKHOUSE_PASSWORD=root
+    ports:
+      - "18123:8123"
+      - "19000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+volumes:
+  mysql_data:
+  postgres_data:
+  clickhouse_data:
+  
