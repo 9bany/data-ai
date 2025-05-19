@@ -1,6 +1,6 @@
 # Data-AI
 
-**Data-AI** is a terminal-based intelligent agent platform that connects to multiple databases (PostgreSQL, MySQL, Redis, MongoDB, ClickHouse, BigQuery...) and transforms them into AI-powered agents capable of understanding, storing, and reasoning over your data.
+**Data-AI** is a terminal-based intelligent agent platform that connects to multiple databases (PostgreSQL, MySQL, ClickHouse, BigQuery...) and transforms them into AI-powered agents capable of understanding, storing, and reasoning over your data.
 
 ## Features
 
@@ -77,9 +77,13 @@ Each connected database becomes an agent that understands the schema and can par
 |--------------|--------------------------|------------|
 | PostgreSQL   | `psycopg2`               | ✅ Stable  |
 | MySQL        | `mysql+pymysql`          | ✅ Stable  |
-| MongoDB      | `pymongo`                | ✅ Stable  |
 | ClickHouse   | `clickhouse-connect`     | ✅ Stable  |
 | BigQuery     | `google-cloud-bigquery`  | ✅ Stable  |
+
+## URI Database format
+- Mysql: `mysql+pymysql://<user>:<password>@<host>:<port>/<database>`
+- PostgreSQL: `postgresql://<user>:<password>@<host>:<port>/<database>`
+- Clickhouse: `clickhouse<+driver>://<user>:<password>@<host>:<port>/<database>[?key=value..]`
 
 ## How Agents Work
 
