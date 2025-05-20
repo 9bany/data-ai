@@ -1,11 +1,20 @@
-import json
 from textwrap import dedent
 
+# General description of the agent's role
 description = dedent("""\
     You are SQrL, an elite Text2SQL Agent with access to a database.
 """)
 
 def get_sql_instruction(datadabse_model: str):
+    """
+    Generates detailed instruction prompt for a Text2SQL agent.
+
+    Parameters:
+    - datadabse_model (str): A textual description of the database schema.
+
+    Returns:
+    - str: Full instruction text for guiding the SQL-generating agent.
+    """
     instructions = dedent(f"""\
         You are a SQL expert focused on writing precise, efficient queries for {datadabse_model}.
 
@@ -57,6 +66,15 @@ def get_sql_instruction(datadabse_model: str):
     return instructions
 
 def additional_context(semantic_model: str) -> str:
+    """
+    Appends semantic model context block to the prompt, defining accessible tables and relationships.
+
+    Parameters:
+    - semantic_model (str): A serialized representation of the semantic schema.
+
+    Returns:
+    - str: The full semantic block to include in prompt input.
+    """
     additional_context = (
         dedent("""\n
         The `semantic_model` contains information about tables and the relationships between them.
@@ -68,3 +86,4 @@ def additional_context(semantic_model: str) -> str:
         </semantic_model>\
     """)
     )
+    return additional_context

@@ -26,8 +26,7 @@ from agents.knowledge import (
 
 logger.setLevel(Config().app_config.log_level)
 
-app = typer.Typer()
-user_id = "root"
+app = typer.Typer(add_completion=False)
 
 @app.command()
 def delete(name: str):
@@ -85,10 +84,25 @@ def list():
     console.print(table)
 
 @app.command()
-def chat():
+def chat(work_mode: str = "route", show_member_response: bool = False):
+    """
+    Start a team-based conversation with AI agents representing different databases.
+
+    Parameters:
+    - work_mode (str): Select team coordination mode. Options:
+        - "route": Only one best-suited agent responds based on the question.
+        - "collaborate": Multiple agents discuss together to reach a consensus.
+    - show_member_response (bool): If True, show individual responses from each agent before final output.
+
+    Example:
+        python src/main.py chat --work-mode collaborate --show-member-response
+    """
     from agents.team import get_data_team
     try:
-        get_data_team(work_style="collaborate").cli_app()
+        get_data_team(
+            work_style=work_mode,
+            show_member_response=show_member_response,
+        ).cli_app()
     except Exception as e:
         typer.echo(f"ERROR: {e}")
 
