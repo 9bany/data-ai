@@ -4,10 +4,21 @@ from sqlalchemy.engine import Engine
 from db import Database, Table, Column
 
 class PostgreSQLDatabase(Database):
+    """
+    PostgreSQL-specific implementation of the abstract Database interface.
+    This class provides methods to retrieve metadata about tables and columns
+    from a PostgreSQL database using SQLAlchemy.
+    """
+
     def __init__(self, engine: Engine):
+        # Initialize with a SQLAlchemy engine to connect to the PostgreSQL database
         self.engine = engine
 
     def tables(self) -> List[Table]:
+        """
+        Retrieve all user-defined tables in the public schema of the database.
+        Returns a list of Table objects with basic metadata.
+        """
         with self.engine.connect() as conn:
             result = conn.execute(text("""
                 SELECT
@@ -29,6 +40,10 @@ class PostgreSQLDatabase(Database):
             return tables
 
     def table(self, table_name: str) -> Table:
+        """
+        Retrieve metadata for a specific table in the public schema.
+        Returns a Table object if found, otherwise raises an error.
+        """
         with self.engine.connect() as conn:
             result = conn.execute(text("""
                 SELECT
@@ -48,6 +63,10 @@ class PostgreSQLDatabase(Database):
             return self._get_table(conn, table_name, row[0])
 
     def _get_table(self, conn, table_name: str, table_description: str) -> Table:
+        """
+        Internal helper method to fetch column metadata for a given table name.
+        Returns a Table object with a list of associated Column objects.
+        """
         result = conn.execute(text("""
             SELECT
                 cols.column_name,
@@ -72,7 +91,9 @@ class PostgreSQLDatabase(Database):
         return Table(name=table_name, description=table_description or "", columns=columns)
 
     def to_json(self) -> dict:
-        """Return the database metadata as a JSON-serializable dictionary."""
+        """
+        Convert the entire database schema (tables and columns) into a JSON-serializable dictionary.
+        """
         with self.engine.connect() as conn:
             result = conn.execute(text("SELECT current_database()"))
             db_name = result.scalar()
