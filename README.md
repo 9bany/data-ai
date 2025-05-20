@@ -64,6 +64,8 @@ data-ai delete mydb
 
 Each connected database becomes an agent that understands the schema and can participate in AI-powered conversations with other databases.
 
+## Examples
+- [Multiple database](https://github.com/9bany/data-ai/tree/master/examples/multi_db)
 
 ## Supported Databases
 
