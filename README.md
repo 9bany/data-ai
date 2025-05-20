@@ -1,5 +1,4 @@
 # Data-AI: AI Agents for Your Databases
-> ⚠️ **Warning:** This project is under active development. Expect breaking changes, incomplete features, and evolving APIs.
 
 Data-AI is a command-line tool that transforms your databases into AI-powered agents. Each agent understands your schema, stores vectorized knowledge, and participates in collaborative or routed AI conversations.
 
