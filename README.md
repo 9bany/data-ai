@@ -100,7 +100,3 @@ Each connected database becomes an agent that understands the schema and can par
 ## 📄 License
 
 MIT License. Free to use, distribute, and modify.
-
----
-
-> 💫 If you find this useful, please ⭐ the repo or share it with others!
