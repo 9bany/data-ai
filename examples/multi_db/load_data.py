@@ -58,6 +58,7 @@ def gen_mysql():
                 product_id INT,
                 user_id INT,
                 name VARCHAR(100),
+                amount INT NOT NULL,
                 address TEXT,
                 FOREIGN KEY (store_id) REFERENCES Store(id),
                 FOREIGN KEY (product_id) REFERENCES Product(id),
@@ -115,9 +116,10 @@ def gen_mysql():
             user_id = random.choice(user_ids)
             name = fake.bs()
             address = fake.address()
+            amount = random.randint(100000, 500000)
             conn.execute(
-                text("INSERT INTO `Order` (store_id, product_id, user_id, name, address) VALUES (:store_id, :product_id, :user_id, :name, :address)"),
-                {"store_id": store_id, "product_id": product_id, "user_id": user_id, "name": name, "address": address}
+                text("INSERT INTO `Order` (store_id, product_id, user_id, name, address, amount) VALUES (:store_id, :product_id, :user_id, :name, :address, :amount)"),
+                {"store_id": store_id, "product_id": product_id, "user_id": user_id, "name": name, "address": address, "amount": amount}
             )
             conn.commit()
 
@@ -254,6 +256,6 @@ def gen_clickhouse():
         raise
     finally:
         engine.dispose()
-# gen_mysql()
-# gen_pg()
+gen_mysql()
+gen_pg()
 gen_clickhouse()
