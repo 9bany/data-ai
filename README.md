@@ -1,7 +1,7 @@
-# Data-AI — Your AI Agent for Databases
+# Data-AI: AI Agents for Your Databases
 > ⚠️ **Warning:** This project is under active development. Expect breaking changes, incomplete features, and evolving APIs.
 
-**Data-AI** is a terminal-based intelligent agent platform that connects to multiple databases (PostgreSQL, MySQL, ClickHouse, BigQuery...) and transforms them into AI-powered agents capable of understanding, storing, and reasoning over your data.
+Data-AI is a command-line tool that transforms your databases into AI-powered agents. Each agent understands your schema, stores vectorized knowledge, and participates in collaborative or routed AI conversations.
 
 ## Features
 
@@ -10,7 +10,7 @@
 - Generates vectorized knowledge from database structure
 - Each database becomes an AI agent with memory
 - Supports collaborative/Coordinative team chat between agents
-- Easy CLI commands: `add`, `list`, `chat`
+- Simple CLI commands: `add`, `list`, `chat`, `delete`
 
 ---
 
@@ -22,34 +22,44 @@
 
 ## Installation
 
-### 1. Clone & install dependencies
+### 1. Clone the repository
 ```bash
-git clone https://github.com/yourname/data-ai.git
+git clone git@github.com:9bany/data-ai.git
 cd data-ai
-pip install -r requirements.txt
+pip install -e .
 ```
 
-### 2. Set up your `.env`
-```env
-export OPENAI_API_KEY=your-openai-api-key
+### 2. Configure environment variables
+Create a `.env` file in the project root or export variables directly:
+```bash
+export OPENAI_API_KEY=your-openai-api-key       # Required for OpenAI GPT
+export GOOGLE_API_KEY=your-google-api-key       # Optional for Google GenAI
+export ANTHROPIC_API_KEY=your-anthropic-api-key # Optional for Anthropic
+export GROQ_API_KEY=your-groq-api-key           # Optional for Groq
 ```
 
 
 ## Usage
+Once installed, the CLI is available as `data-ai`. You can also run `python src/main.py <command>` directly.
 
 ### Add a database
 ```bash
-python src/main.py add --uri "postgresql://user:pass@localhost:5432/mydb"
+data-ai add --uri "postgresql://user:pass@localhost:5432/mydb" --name mydb
 ```
 
-### List all connected databases
+### List all registered databases
 ```bash
-python src/main.py list
+data-ai list
 ```
 
-### 💬 Start a collaborative AI chat
+### 💬 Start an AI chat
 ```bash
-python src/main.py chat
+data-ai chat --work-mode collaborate --show-member-response
+```
+
+### Delete a database agent
+```bash
+data-ai delete mydb
 ```
 
 Each connected database becomes an agent that understands the schema and can participate in AI-powered conversations with other databases.
@@ -59,10 +69,10 @@ Each connected database becomes an agent that understands the schema and can par
 
 | Database     | Driver                  | Status     |
 |--------------|--------------------------|------------|
-| PostgreSQL   | `psycopg2`               | ✅ Stable  |
+| PostgreSQL   | `psycopg2-binary`        | ✅ Stable  |
 | MySQL        | `mysql+pymysql`          | ✅ Stable  |
-| ClickHouse   | `clickhouse-connect`     | ✅ Stable  |
-| BigQuery     | `google-cloud-bigquery`  | ✅ Stable  |
+| ClickHouse   | `clickhouse-sqlalchemy`  | ✅ Stable  |
+| BigQuery     | `google-cloud-bigquery`  | 🚧 Unstable  |
 
 ## URI Database format
 - Mysql: `mysql+pymysql://<user>:<password>@<host>:<port>/<database>`
@@ -88,17 +98,6 @@ Each connected database becomes an agent that understands the schema and can par
 ## 📄 License
 
 MIT License. Free to use, distribute, and modify.
-
----
-
-## 🙏 Credits
-
-Built with:
-- [Typer](https://github.com/tiangolo/typer)
-- [Rich](https://github.com/Textualize/rich)
-- [SQLAlchemy](https://www.sqlalchemy.org/)
-- [OpenAI](https://platform.openai.com/)
-- [Qdrant / Chroma / JSON Vector DBs](https://qdrant.tech/)
 
 ---
 
