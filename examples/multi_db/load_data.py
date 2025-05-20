@@ -60,6 +60,8 @@ def gen_mysql():
                 name VARCHAR(100),
                 amount INT NOT NULL,
                 address TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (store_id) REFERENCES Store(id),
                 FOREIGN KEY (product_id) REFERENCES Product(id),
                 FOREIGN KEY (user_id) REFERENCES User(id)

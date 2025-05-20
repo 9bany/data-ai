@@ -52,7 +52,6 @@ def get_sql_agent(
     # Attach core tools: SQL access and file saving
     tools = [
         SQLTools(list_tables=False, db_engine=db_engine),
-        FileTools(base_dir=IMAGES_PATH),
     ]
 
     # Optionally add reasoning toolset for higher-level tasks
@@ -77,6 +76,7 @@ def get_sql_agent(
         add_history_to_messages=True,
         add_datetime_to_instructions=True,
         show_tool_calls=debug_mode,
+        add_name_to_instructions=True,
     )
 
 def get_structure_usage_explainer(
@@ -99,12 +99,14 @@ def get_structure_usage_explainer(
 
             When the user provides input, follow these steps:
 
-            1. Understand the structure or schema mentioned.
-            2. Do not describe tables or columns.
-            3. Only explain in what situations this database structure would be useful or appropriate.
+            1. Understand the schema and structure of the database.
+            2. Describe the tables and their associated columns.
+            3. Explain in what situations this structure would be useful or appropriate.
 
             <rules>
-            - Only return an explanation of when and why this database structure should be used. Do not return table or column details.
+            - Return a description of the structure, including tables and their columns.
+            - Also explain when and why this structure would be useful in practice.
+            - Keep output readable and informative for someone unfamiliar with the schema.
             </rules>
         """),
         debug_mode=False,
@@ -142,7 +144,7 @@ def get_structure_explainer_with_example(
             - Ensure queries account for null values and edge cases.
             - Return only plain text — do not use Markdown or other formatting.
             - Always explain what type of questions or use cases this database is best suited to answer.
-            - Always include at least one example query that demonstrates a typical use case for the identified table(s).
+            - Always include at least one example query that demonstrates a typical use case for the identified table(s). The query must be valid and follow correct SQL syntax.
             </rules>
         """),
         debug_mode=False,

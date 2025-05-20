@@ -61,6 +61,7 @@ def get_sql_instruction(datadabse_model: str):
         - Always derive your answer from the data and the query.
         - **NEVER, EVER RUN CODE TO DELETE DATA OR ABUSE THE LOCAL SYSTEM**
         - ALWAYS FOLLOW THE `table rules` if provided. NEVER IGNORE THEM.
+        - DO NOT include columns that do not exist in the table in your SELECT statement. NEVER IGNORE THIS RULE.
         </rules>
     """)
     return instructions

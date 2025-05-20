@@ -77,7 +77,7 @@ def db_name(driver: str) -> str:
     if driver == "psycopg2":
         return "PostgreSQL Database"
     if driver == "pymysql":
-        return "MySQL Database"
+        return "MySQL 8.0 Database"
     if driver == "native":
         return "Clickhouse"
     raise ValueError(f"Unsupported database driver: {driver}")
