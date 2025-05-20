@@ -1,4 +1,3 @@
-
 import os
 from os.path import join, dirname
 from config import Config
@@ -86,16 +85,26 @@ def list():
 @app.command()
 def chat(work_mode: str = "route", show_member_response: bool = False):
     """
-    Start a team-based conversation with AI agents representing different databases.
+    Start a team-based conversation with AI agents that represent different databases.
 
     Parameters:
-    - work_mode (str): Select team coordination mode. Options:
-        - "route": Only one best-suited agent responds based on the question.
-        - "collaborate": Multiple agents discuss together to reach a consensus.
-    - show_member_response (bool): If True, show individual responses from each agent before final output.
+    - work_mode (str): Select team behavior mode. Options:
+        - "route": Only one best-matched agent will respond to the user's question.
+        - "coordinate": Multiple agents will contribute to the final answer by reasoning together. This mode allows collaborative problem solving when information is distributed across agents.
+
+    - show_member_response (bool): If True, shows each agent's individual response before the final synthesized output.
 
     Example:
-        python src/main.py chat --work-mode collaborate --show-member-response
+        To answer a question like "Get recent transactions for user ID 5" where:
+        - MySQL agent holds user and order tables
+        - Postgres agent holds transaction table
+
+        The coordinate mode enables:
+        - MySQL agent to return order_ids for user_id=5
+        - Postgres agent to use those order_ids to find relevant transactions
+
+    Command:
+        python src/main.py chat --work-mode coordinate --show-member-response
     """
     from agents.team import get_data_team
     try:
